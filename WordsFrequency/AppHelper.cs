@@ -10,7 +10,7 @@ using WordsFrequency.Common.Text;
 
 namespace WordsFrequency
 {
-    internal class AppHelper
+    public static class AppHelper
     {
         /// <summary>
         ///     The perform database operations.
