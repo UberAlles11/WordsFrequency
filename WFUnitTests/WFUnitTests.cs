@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.Entity;
 using WordsFrequency.Common.DAL;
 using WordsFrequency.Common.DAL.Entities;
@@ -24,9 +23,9 @@ namespace WFUnitTests
         [TestMethod]
         public void GetInitialTextFromRepositoryTest()
         {
-            using (var data = new DbDataRepository<SourceTextBase>())
+            using (var uow = new UnitOfWork())
             {
-                var source = data.GetAll().FirstOrDefault();
+                var source = uow.All<SourceTextBase>().FirstOrDefault();
                 Assert.IsNotNull(source);
                 Assert.IsFalse(source.Text.IsNullOrEmpty());
             }
@@ -35,10 +34,10 @@ namespace WFUnitTests
         [TestMethod]
         public void ClearAllWordsFromRepositoryTest()
         {
-            using (var data = new DbDataRepository<WordsCountBase>())
+            using (var uow = new UnitOfWork())
             {
-                data.DeleteAll();
-                var source = data.GetAll();
+                uow.RemoveAll<WordsCountBase>();
+                var source = uow.All<WordsCountBase>();
                 Assert.IsNotNull(source);
                 Assert.IsFalse(source.Any());
             }
@@ -47,12 +46,12 @@ namespace WFUnitTests
         [TestMethod]
         public void AddWordToRepositoryTest()
         {
-            using (var data = new DbDataRepository<WordsCountBase>())
+            using (var uow = new UnitOfWork())
             {
-                data.Add(new WordsCountBase() { Word = "TEST1", Count = 123 } );
-                data.Add(new WordsCountBase() { Word = "TEST2", Count = 124 });
-                data.Save();
-                var source = data.GetAllQueryable().OrderByDescending(x => x.Id).Take(1).ToList().Single();
+                uow.Add(new WordsCountBase() { Word = "TEST1", Count = 123 } );
+                uow.Add(new WordsCountBase() { Word = "TEST2", Count = 124 });
+                uow.SaveChanges();
+                var source = uow.All<WordsCountBase>().AsQueryable().OrderByDescending(x => x.Id).Take(1).ToList().Single();
                 Assert.IsNotNull(source);
                 Assert.AreEqual(source.Word, "TEST2");
                 Assert.AreEqual(source.Count, 124);

@@ -11,7 +11,7 @@ namespace WordsFrequency.Common.DAL
         public DbSet<SourceTextBase> SourceText { get; set; }
 
         public DataContext()
-: base()//"WordsFrequencyData")
+: base("Name=WFData")
         {
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, WordsFrequency.Migrations.Configuration>("WordsFrequency"));
         }

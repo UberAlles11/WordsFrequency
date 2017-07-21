@@ -2,22 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using WordsFrequency.Common.Extensions;
 
 namespace WordsFrequency.Common.Text
 {
     public class SimpleTextProcessorRegex : ITextProcessor
     {
-        private string source;
+        ITextProvider provider;
 
-        public SimpleTextProcessorRegex(string text)
+        public SimpleTextProcessorRegex(ITextProvider provider)
         {
-            this.source = text;
+            this.provider = provider;
         }
 
         public IEnumerable<string> GetWords()
         {
-            var text = Regex.Replace(source, "[_«»\\(\\)<>\\[\\]\\*\\//]", " ", RegexOptions.IgnoreCase);
-            return text.Split(new[] { ' ', '"', '.', ',', ';', ':', '!', '?', '+', '=', '-', '—', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)
+            if (provider.Text.IsNullOrEmpty())
+                return new List<string>();
+
+            var cleanedText = Regex.Replace(provider.Text, "[_«»\\(\\)<>\\[\\]\\*\\//]", " ", RegexOptions.IgnoreCase);
+            return cleanedText.Split(new[] { ' ', '"', '.', ',', ';', ':', '!', '?', '+', '=', '-', '—', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)
                 .Where(s => new Regex(@"\b\w+").IsMatch(s));
         }
     }

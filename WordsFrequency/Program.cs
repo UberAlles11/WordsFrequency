@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Autofac;
+using System;
+using System.Data.Entity;
 using WordsFrequency.Common.DAL;
 using WordsFrequency.Common.Extensions;
+using WordsFrequency.UI;
 
 namespace WordsFrequency
 {
@@ -8,86 +11,96 @@ namespace WordsFrequency
     {
         static void Main(string[] args)
         {
-            AppHelper.DbInit();
+            DbInit();
 
-            var keyPressed = new ConsoleKeyInfo();
-            do
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new WordsFrequencyModule());            
+
+            using (var container = builder.Build())
             {
-                var text = string.Empty;
+                var ui = container.Resolve<ConsoleUI>();
 
-                while (text.IsNullOrEmpty())
-                {
-                    AppHelper.ShowRootMenu();
-
-                    var textSource = AppHelper.SelectSource(); // Выбрать источник из 3х вариантов
-
-                    if (textSource == null)
-                    {
-                        Console.WriteLine(">> Ошибка ввода.");
-                        Console.WriteLine(">> Нажмите любую клавишу и сделайте выбор заново.");
-                        Console.ReadKey(false);
-                    }
-                    else
-                    {
-                        text = textSource.GetText(); // Получить текст из источника
-                        if (text.IsNullOrEmpty())
-                        {
-                            Console.WriteLine(">> Текст не содержит слов.");
-                            Console.WriteLine(">> Нажмите любую клавишу и сделайте выбор заново.");
-                            Console.ReadKey(false);
-                        }
-                        else
-                        {
-                            Console.Clear();
-                            Console.WriteLine(text);
-                            Console.WriteLine();
-                        }
-                    }
-                }
-
-                Console.WriteLine(">> Нажмите любую клавишу для продолжения...");
-                Console.ReadKey(false);
-
-                var wordsCount = AppHelper.GetWordsFrequency(text); // Посчитать частоту слов
-
-                // Сохранение
-
-                IWordsFrequencyRepository saveRepository = null;
-                
                 do
                 {
-                    AppHelper.ShowSaveMenu();
-
-                    saveRepository = AppHelper.SelectSaveRepository(wordsCount); // Выбрать источник из 3х вариантов
-
-                    if (saveRepository == null)
+                    var text = string.Empty;
+                    
+                    while (text.IsNullOrEmpty())
                     {
-                        Console.WriteLine(">> Ошибка ввода.");
-                        Console.WriteLine(">> Нажмите любую клавишу и сделайте выбор заново.");
-                        Console.WriteLine(">> Либо нажмите ESC для отмены.");
-                        keyPressed = Console.ReadKey(false);
+                        ui.ShowRootMenu();
+
+                        var typ = ui.ReadSourceType(); // Выбрать источник из 3х вариантов
+
+                        using (var scope = container.BeginLifetimeScope())
+                        {
+                            var textSource = scope.ResolveNamed<ITextSource>(typ.ToString()); // получить требуемый источник из контейнера
+
+                            if (textSource.IsNull())
+                            {
+                                ui.ShowError(">> Ошибка источника.");
+                            }
+                            else
+                            {
+                                text = textSource.ReadText(); // Получить текст из источника                                
+                                if (text.IsNullOrEmpty())
+                                {
+                                    ui.ShowError(">> Текст не содержит слов.");
+                                }
+                                else
+                                {
+                                    ui.WriteText(text);
+                                }
+                            }
+                        }
                     }
-                    else
+
+                    ui.Continue(">> Нажмите любую клавишу для продолжения...");
+
+                    // Сохранение
+
+                    IWordsFrequencyStorage storage = null;
+
+                    do
                     {
-                        saveRepository.Commit();
-                        Console.WriteLine(">> Выполнено");
-                        Console.WriteLine();
+                        ui.ShowSaveMenu();
+
+                        var typ = ui.ReadStorageType();
+
+                        using (var scope = container.BeginLifetimeScope())
+                        {
+                            storage = scope.ResolveNamed<IWordsFrequencyStorage>(typ.ToString()); // Получить нужный стораж из контейнера
+
+                            if (storage.IsNull())
+                            {
+                                ui.ShowErrorWithEscape(">> Текст не содержит слов.");
+                            }
+                            else
+                            {
+                                storage.Commit();
+                                ui.WriteLine(string.Format(">> Выполнено{0}", Environment.NewLine));
+                            }
+                        }
+                    } while (storage.IsNull() && !ui.EscapePressed());
+
+                    if (!ui.EscapePressed())
+                    {
+                        ui.WriteLine(">> Нажмите любую клавишу для повторного запуска");
+                        ui.WriteLine(">> или ESC для выхода из приложения...");
+                        ui.ReadKey(false);
                     }
-                } while (saveRepository == null && keyPressed.Key != ConsoleKey.Escape);
+                } while (!ui.EscapePressed());
+            }
+        }
 
-
-                if (keyPressed.Key != ConsoleKey.Escape)
-                {                    
-                    Console.WriteLine(">> Нажмите любую клавишу для повторного запуска");
-                    Console.WriteLine(">> или ESC для выхода из приложения...");
-                    keyPressed = Console.ReadKey(false);
-                }
-                else
-                {
-                    keyPressed = new ConsoleKeyInfo();
-                }
-
-            } while (keyPressed.Key != ConsoleKey.Escape);            
-        }        
+        /// <summary>
+        ///     The perform database operations.
+        /// </summary>
+        internal static void DbInit()
+        {
+            Database.SetInitializer(new DataInitializer());
+            using (var db = new DataContext())
+            {
+                db.Database.Initialize(true);
+            }
+        }
     }
 }

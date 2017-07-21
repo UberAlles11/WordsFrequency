@@ -53,5 +53,13 @@ namespace WordsFrequency.Common.Extensions
                 await outputFile.WriteAsync(text.ToString());
             }
         }
+
+        #region IsNullOrEmpty
+        public static bool IsNull<T>(this T self) where T : class
+        {
+            return self == null;
+        }
+            
+        #endregion
     }
 }

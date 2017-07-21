@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WordsFrequency.Common
+namespace WordsFrequency.Common.Extensions
 {
     /// <summary>
     /// Provides utility methods to guard parameter and local variables.

@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordsFrequency", "WordsFrequency\WordsFrequency.csproj", "{AEF403CD-1D5A-49A3-BB17-25A42D201F5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFUnitTests", "WFUnitTests\WFUnitTests.csproj", "{7CB4982D-A1BC-42A8-BA25-B12B0B14F834}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordsFrequency.Tests", "WFUnitTests\WordsFrequency.Tests.csproj", "{7CB4982D-A1BC-42A8-BA25-B12B0B14F834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordsFrequencyCommon", "WordsFrequencyCommon\WordsFrequencyCommon.csproj", "{28B2A18B-860A-44CA-A125-A19D07082B4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordsFrequency.Common", "WordsFrequencyCommon\WordsFrequency.Common.csproj", "{28B2A18B-860A-44CA-A125-A19D07082B4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordsFrequency.ConsoleUI", "WordsFrequencyConsoleUI\WordsFrequency.ConsoleUI.csproj", "{7A4E70E8-2BF2-4EA7-AA61-7C7C90DBEF08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{28B2A18B-860A-44CA-A125-A19D07082B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28B2A18B-860A-44CA-A125-A19D07082B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28B2A18B-860A-44CA-A125-A19D07082B4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A4E70E8-2BF2-4EA7-AA61-7C7C90DBEF08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A4E70E8-2BF2-4EA7-AA61-7C7C90DBEF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A4E70E8-2BF2-4EA7-AA61-7C7C90DBEF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A4E70E8-2BF2-4EA7-AA61-7C7C90DBEF08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

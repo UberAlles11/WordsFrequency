@@ -14,7 +14,7 @@ namespace WordsFrequency.Common.Extensions
         #region ForEach
         public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
-            if (list == null || action == null) return;
+            if (list.IsNullOrEmpty() || action == null) return;
 
             foreach (T element in list)
             {
@@ -26,7 +26,7 @@ namespace WordsFrequency.Common.Extensions
         #region ForEach
         public static void ForEach<T>(this IEnumerable<T> list, Action<T,int> action)
         {
-            if (list == null || action == null) return;
+            if (list.IsNullOrEmpty() || action == null) return;
 
             int index = 0;
             foreach (T element in list)

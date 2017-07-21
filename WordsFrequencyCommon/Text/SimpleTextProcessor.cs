@@ -5,16 +5,16 @@ namespace WordsFrequency.Common.Text
 {
     public class SimpleTextProcessor : ITextProcessor
     {
-        private string source;
+        ITextProvider _provider;
 
-        public SimpleTextProcessor(string text)
+        public SimpleTextProcessor(ITextProvider provider)
         {
-            this.source = text;
+            _provider = provider;
         }
 
         public IEnumerable<string> GetWords()
         {
-            return source.Split(new[] { ' ', '"', '.', ',', ';', ':', '!', '?', '+', '=', '-', '—', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);                
-        }
+            return _provider.Text.Split(new[] { ' ', '"', '.', ',', ';', ':', '!', '?', '+', '=', '-', '—', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);                
+        }        
     }
 }
