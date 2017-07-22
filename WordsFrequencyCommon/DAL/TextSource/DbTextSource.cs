@@ -8,27 +8,24 @@ namespace WordsFrequency.Common.DAL
 {
     public class DbTextSource : ITextSource
     {
-        ITextProvider provider;
-        string textBuffer = string.Empty;
-        IUnitOfWork uow;
+        string _textBuffer = string.Empty;
+        IUnitOfWork _uow;
 
-        public DbTextSource(ITextProvider provider, IUnitOfWork uow)
+        public DbTextSource(IUnitOfWork uow)
         {
-            Guard.Against<ArgumentNullException>(provider.IsNull(), "DbTextSource: provider is null");
-
-            this.provider = provider;
-            this.uow = uow;
+            Guard.Against<ArgumentNullException>(uow.IsNull(), "DbTextSource: uow is null");            
+            _uow = uow;
         }
 
         public string GetBufferedText()
         {
-            return provider.Text;
+            return _textBuffer;
         }
 
-        public string ReadText()
+        public string ReadTextToBuffer()
         {
-            provider.Text = uow.All<SourceTextBase>().FirstOrDefault().Text;
-            return provider.Text;
+            _textBuffer = _uow.All<SourceTextBase>().FirstOrDefault().Text;
+            return _textBuffer;
         }
     }
 }

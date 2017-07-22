@@ -29,14 +29,10 @@ namespace WFUnitTestss
 
             _testFile = new TestFile(testFilePath, testText);
 
-            var textProviderMock = new Mock<ITextProvider>();
-            textProviderMock.Setup(a => a.Text).Returns(testText);
-
             var fileProviderMock = new Mock<IFilePathProvider>();
             fileProviderMock.Setup(a => a.GetPath()).Returns(testFilePath);
 
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(textProviderMock.Object).As<ITextProvider>();
             builder.RegisterInstance(fileProviderMock.Object).As<IFilePathProvider>();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
@@ -53,11 +49,13 @@ namespace WFUnitTestss
             using (var scope = _container.BeginLifetimeScope())
             {
                 var source = scope.ResolveNamed<ITextSource>("file");
-                var text = source.ReadText();
-                Assert.IsFalse(string.IsNullOrEmpty(text));
+                var text = source.ReadTextToBuffer();
                 var text2 = source.GetBufferedText();
+
+                Assert.IsFalse(string.IsNullOrEmpty(text));
                 Assert.IsFalse(string.IsNullOrEmpty(text2));
                 Assert.AreEqual(text, text2);
+                Assert.AreEqual(text2, _testFile.Text);
             }
         }
 
@@ -67,9 +65,10 @@ namespace WFUnitTestss
             using (var scope = _container.BeginLifetimeScope())
             {
                 var source = scope.ResolveNamed<ITextSource>("db");
-                var text = source.ReadText();
-                Assert.IsFalse(string.IsNullOrEmpty(text));
+                var text = source.ReadTextToBuffer();
                 var text2 = source.GetBufferedText();
+
+                Assert.IsFalse(string.IsNullOrEmpty(text));                
                 Assert.IsFalse(string.IsNullOrEmpty(text2));
                 Assert.AreEqual(text, text2);
             }

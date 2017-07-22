@@ -4,7 +4,6 @@ using WordsFrequency.Common.DAL.Entities;
 
 namespace WordsFrequency.Common.DAL
 {
-
     public class DataContext: DbContext {
 
         public DbSet<WordsCountBase> WordsCount { get; set; }

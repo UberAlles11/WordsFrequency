@@ -67,6 +67,7 @@
     <Compile Include="TestFile.cs" />
     <Compile Include="FileHelperMock.cs" />
     <Compile Include="TextProcessorTests.cs" />
+    <Compile Include="WordsStorageTests.cs" />
     <Compile Include="TextSourceTests.cs" />
     <Compile Include="WFUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

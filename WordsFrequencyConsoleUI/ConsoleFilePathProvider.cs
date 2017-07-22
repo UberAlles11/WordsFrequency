@@ -6,11 +6,18 @@ namespace WordsFrequency.UI
 {
     public class ConsoleFilePathProvider : IFilePathProvider
     {
+        IConsole _console;
+
+        public ConsoleFilePathProvider(IConsole console)
+        {
+            _console = console;
+        }
+
         public string GetPath()
         {            
-            var dir = new System.IO.DirectoryInfo(Environment.CurrentDirectory);
+            var dir = new DirectoryInfo(Environment.CurrentDirectory);
 
-            Console.WriteLine(string.Format("Список файлов в текущем каталоге (..\\{0}):", dir.Name));
+            _console.WriteLine(string.Format("Список файлов в текущем каталоге (..\\{0}):", dir.Name));
 
             var allowedExtensions = new[] { ".fb2", ".txt", ".cs", ".config" };
             var files = 
@@ -18,21 +25,21 @@ namespace WordsFrequency.UI
                 .Where(file => allowedExtensions.Any(file.Name.ToLower().EndsWith))
                 .ToList();
 
-            Console.WriteLine("");
+            _console.WriteLine("");
 
-            files.ForEach(f => Console.WriteLine(f.Name));
+            files.ForEach(f => _console.WriteLine(f.Name));
 
-            Console.WriteLine("");
+            _console.WriteLine("");
 
-            Console.WriteLine("Введите полный путь к файлу либо имя файла в текущем каталоге:");
+            _console.WriteLine("Введите полный путь к файлу либо имя файла в текущем каталоге:");
 
             string path = String.Empty;
-            while ((path = Console.ReadLine()) != null && !string.IsNullOrEmpty(path))
+            while ((path = _console.ReadLine()) != null && !string.IsNullOrEmpty(path))
             {
                 var file = new FileInfo(path);
                 if (file.Exists && file.Length > 0)
                     break;
-                Console.WriteLine("Имя файла введено некорректно, повторите ввод заново:");
+                _console.WriteLine("Имя файла введено некорректно, повторите ввод заново:");
             }
 
             return path;

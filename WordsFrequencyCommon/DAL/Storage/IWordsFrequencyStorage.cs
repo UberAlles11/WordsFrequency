@@ -1,7 +1,9 @@
-﻿namespace WordsFrequency.Common.DAL
+﻿using System.Collections.Generic;
+
+namespace WordsFrequency.Common.DAL
 {
     public interface IWordsFrequencyStorage
     {
-        void Commit();
+        void Commit(IDictionary<string, int> wordsCount);
     }
 }

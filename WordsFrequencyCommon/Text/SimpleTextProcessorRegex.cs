@@ -8,19 +8,12 @@ namespace WordsFrequency.Common.Text
 {
     public class SimpleTextProcessorRegex : ITextProcessor
     {
-        ITextProvider provider;
-
-        public SimpleTextProcessorRegex(ITextProvider provider)
+        public IEnumerable<string> GetWords(string text)
         {
-            this.provider = provider;
-        }
-
-        public IEnumerable<string> GetWords()
-        {
-            if (provider.Text.IsNullOrEmpty())
+            if (text.IsNullOrEmpty())
                 return new List<string>();
 
-            var cleanedText = Regex.Replace(provider.Text, "[_«»\\(\\)<>\\[\\]\\*\\//]", " ", RegexOptions.IgnoreCase);
+            var cleanedText = Regex.Replace(text, "[_«»\\(\\)<>\\[\\]\\*\\//]", " ", RegexOptions.IgnoreCase);
             return cleanedText.Split(new[] { ' ', '"', '.', ',', ';', ':', '!', '?', '+', '=', '-', '—', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)
                 .Where(s => new Regex(@"\b\w+").IsMatch(s));
         }

@@ -23,11 +23,8 @@ namespace WFUnitTestss
         [TestMethod]
         public void SimpleTextProcessorRegexTest()
         {
-            var mock = new Mock<ITextProvider>();
-            mock.Setup(a => a.Text).Returns("Я знаю три слова");
-
-            _processor = new SimpleTextProcessorRegex(mock.Object);
-            var words = _processor.GetWords();
+            _processor = new SimpleTextProcessorRegex();
+            var words = _processor.GetWords("Я знаю три слова");
 
             Assert.IsTrue(words.Any());
             Assert.AreEqual(words.Count(), 4);
@@ -36,11 +33,8 @@ namespace WFUnitTestss
         [TestMethod]
         public void SimpleTextProcessorTest()
         {
-            var mock = new Mock<ITextProvider>();
-            mock.Setup(a => a.Text).Returns("Я знаю три слова");
-
-            _processor = new SimpleTextProcessor(mock.Object);
-            var words = _processor.GetWords();
+            _processor = new SimpleTextProcessor();
+            var words = _processor.GetWords("Я знаю три слова");
 
             Assert.IsTrue(words.Any());
             Assert.AreEqual(words.Count(), 4);

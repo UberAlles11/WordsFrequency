@@ -1,21 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WordsFrequency.Common.Extensions;
 
 namespace WordsFrequency.Common.Text
 {
     public class WordsFrequencyProcessor : IWordsFrequencyProcessor
     {
-        ITextProcessor processor;
-
-        public WordsFrequencyProcessor(ITextProcessor processor)
+        public IDictionary<string, int> GetWordsFrequency(IEnumerable<string> words)
         {
-            this.processor = processor;
-        }
+            if (words.IsNullOrEmpty())
+                return new Dictionary<string, int>();
 
-        public IDictionary<string, int> GetWordsFrequency()
-        {
-            return processor.GetWords()
-                .GroupBy(w => w)
+            return words.GroupBy(w => w)
                 .Select(word => new
                 {
                     Word = word.Key,

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core;
+using System;
 using System.Collections.Generic;
 using WordsFrequency.Common.DAL;
 using WordsFrequency.Common.Text;
@@ -9,15 +10,12 @@ namespace WordsFrequency
 {
     public class WordsFrequencyModule : Module
     {
-        //public bool ObeySpeedLimit { get; set; }
-
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ConsoleUI>().AsSelf();
+            builder.RegisterType<ConsoleUI>().As<IConsole>();
 
             // SOURCE SECTION
-
-            builder.RegisterType<TextProvider>().As<ITextProvider>().SingleInstance();
 
             builder.RegisterType<SimpleTextProcessorRegex>().As<ITextProcessor>();
 
@@ -30,34 +28,15 @@ namespace WordsFrequency
 
             builder.RegisterType<WordsFrequencyProcessor>().As<IWordsFrequencyProcessor>();
 
-            // PRESENTER SECTION
-
-            builder.RegisterType<ConsoleUI>().As<IConsole>();
-            builder.RegisterType<WordsFrequencyConsoleStorage>().Named<IWordsFrequencyStorage>(SourceType.Console.ToString())
-                .WithParameter(
-                new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, int>) && pi.Name == "wordsCount",
-                    (pi, ctx) => ctx.Resolve<IWordsFrequencyProcessor>().GetWordsFrequency())
-                )
-                .WithParameter("lengthThreshold", 3)
-                .WithParameter("frequencyThreshold", 2);
-
-            //Console.WriteLine(">> Загрузка файла...");                    
-            builder.RegisterType<WordsFrequencyFileStorage>().Named<IWordsFrequencyStorage>(SourceType.File.ToString())
-            .WithParameter(
-                new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, int>) && pi.Name == "wordsCount",
-                    (pi, ctx) => ctx.Resolve<IWordsFrequencyProcessor>().GetWordsFrequency())
-                );
-
-            //Console.WriteLine(">> Загрузка текста из БД...");
+            // STORAGE SECTION
+            
+            builder.RegisterType<WordsFrequencyConsoleStorage>()
+                .Named<IWordsFrequencyStorage>(SourceType.Console.ToString());
+            builder.RegisterType<WordsFrequencyFileStorage>()
+                .Named<IWordsFrequencyStorage>(SourceType.File.ToString());
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
-            builder.RegisterType<WordsFrequencyDbStorage>().Named<IWordsFrequencyStorage>(SourceType.Database.ToString())
-                .WithParameter(
-                new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, int>) && pi.Name == "wordsCount",
-                    (pi, ctx) => ctx.Resolve<IWordsFrequencyProcessor>().GetWordsFrequency())
-                );
+            builder.RegisterType<WordsFrequencyDbStorage>()
+                .Named<IWordsFrequencyStorage>(SourceType.Database.ToString());
         }
     }
 }

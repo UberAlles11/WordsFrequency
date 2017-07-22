@@ -9,7 +9,7 @@ namespace WordsFrequency.Common.DAL.Entities
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        public static T CreateInstance<T>() where T : new()
+        public static T CreateInstance<T>() where T : EntityBase, new()
         {
             return new T();
         }

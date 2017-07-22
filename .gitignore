@@ -2,4 +2,13 @@
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
 
-/WordsFrequency/bin/Debug
+/WordsFrequency/bin
+/WordsFrequency/obj
+/WordsFrequencyCommon/bin
+/WordsFrequencyCommon/obj
+/WordsFrequencyConsoleUI/bin
+/WordsFrequencyConsoleUI/obj
+/WFUnitTests/bin
+/WFUnitTests/obj
+/TestResults
+/packages

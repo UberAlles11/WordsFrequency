@@ -4,6 +4,6 @@ namespace WordsFrequency.Common.Text
 {
     public interface ITextProcessor
     {
-        IEnumerable<string> GetWords();
+        IEnumerable<string> GetWords(string text);
     }
 }

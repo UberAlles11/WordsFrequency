@@ -4,6 +4,6 @@ namespace WordsFrequency.Common.Text
 {
     public interface IWordsFrequencyProcessor
     {
-        IDictionary<string, int> GetWordsFrequency();
+        IDictionary<string, int> GetWordsFrequency(IEnumerable<string> words);
     }
 }

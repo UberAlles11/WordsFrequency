@@ -2,7 +2,7 @@
 {
     public interface ITextSource
     {
-        string ReadText();
+        string ReadTextToBuffer();
         string GetBufferedText();
     }
 }

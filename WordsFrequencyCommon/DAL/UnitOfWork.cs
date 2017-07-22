@@ -83,7 +83,7 @@ namespace WordsFrequency.Common.DAL
 
         public IEnumerable<T> Remove<T>(IEnumerable<T> entries) where T : class
         {
-            Guard.Against<ArgumentNullException>(entries == null, "DbDataRepository.Delete: entities is null");
+            Guard.Against<ArgumentNullException>(entries == null, "UnitOfWork.Remove: entries is null");
             return Set<T>().RemoveRange(entries);
         }
 
@@ -143,7 +143,6 @@ namespace WordsFrequency.Common.DAL
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
-            //Console.WriteLine("DISPOSE");
             if (!_disposed)
             {
                 base.Dispose(disposing);

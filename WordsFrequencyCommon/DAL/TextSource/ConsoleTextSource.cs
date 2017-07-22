@@ -1,28 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using WordsFrequency.Common.Extensions;
-using WordsFrequency.Common.Text;
 
 namespace WordsFrequency.Common.DAL
 {
     public class ConsoleTextSource : ITextSource
     {
-        ITextProvider provider;
+        string _textBuffer = string.Empty;
 
-        public ConsoleTextSource(ITextProvider provider)
-        {
-            Guard.Against<ArgumentNullException>(provider.IsNull(), "ConsoleTextSource: provider is null");
-
-            this.provider = provider;
-        }
 
         public string GetBufferedText()
         {
-            return provider.Text;
+            return _textBuffer;
         }
 
-        public string ReadText()
+        public string ReadTextToBuffer()
         {
             Console.WriteLine(">> Введите текст (ввод пустой строки - закончить):");
 
@@ -37,8 +29,8 @@ namespace WordsFrequency.Common.DAL
                 }
             }
 
-            provider.Text = sb.ToString();
-            return provider.Text;
+            _textBuffer = sb.ToString();
+            return _textBuffer;
         }
     }
 }

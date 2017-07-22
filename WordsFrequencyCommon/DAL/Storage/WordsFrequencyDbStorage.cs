@@ -7,28 +7,28 @@ namespace WordsFrequency.Common.DAL
 {
     public class WordsFrequencyDbStorage : IWordsFrequencyStorage
     {
-        private IDictionary<string, int> wordsCount;
-        IUnitOfWork uow;
+        IUnitOfWork _uow;
 
-        public WordsFrequencyDbStorage(IDictionary<string, int> wordsCount, IUnitOfWork uow)
+        public WordsFrequencyDbStorage(IUnitOfWork uow)
         {
-            Guard.Against<ArgumentNullException>(wordsCount == null, "WordsFrequencyDbRepository: wordsCount is null");
-            Guard.Against<ArgumentNullException>(uow == null, "WordsFrequencyDbRepository: wordsCount is null");
-            this.wordsCount = wordsCount;
-            this.uow = uow;
+            Guard.Against<ArgumentNullException>(uow == null, "WordsFrequencyDbStorage: wordsCount is null");
+            
+            _uow = uow;
         }
 
-        public void Commit()
+        public void Commit(IDictionary<string, int> wordsCount)
         {
-            uow.RemoveAll<WordsCountBase>();
+            Guard.Against<ArgumentNullException>(wordsCount.IsNullOrEmpty, "WordsFrequencyDbStorage: wordsCount is null");
+
+            _uow.RemoveAll<WordsCountBase>();
             wordsCount.ForEach(wc =>
             {
                 var entity = WordsCountBase.CreateInstance();
                 entity.Word = wc.Key;
                 entity.Count = wc.Value;
-                uow.Add(entity);
+                _uow.Add(entity);
             });
-            uow.SaveChanges();            
+            _uow.SaveChanges();            
         }        
     }
 }

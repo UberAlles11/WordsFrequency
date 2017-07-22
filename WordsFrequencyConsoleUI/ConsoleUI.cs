@@ -119,5 +119,10 @@ namespace WordsFrequency.UI
         {
             return LastKeyPressed.Key == ConsoleKey.Escape;
         }
+
+        public string ReadLine()
+        {
+           return Console.ReadLine();
+        }
     }
 }

@@ -7,16 +7,10 @@ namespace WordsFrequency.Common.DAL
 {
     public class WordsFrequencyFileStorage : IWordsFrequencyStorage
     {
-        private IDictionary<string, int> wordsCount;
-
-        public WordsFrequencyFileStorage(IDictionary<string, int> wordsCount)
+        public void Commit(IDictionary<string, int> wordsCount)
         {
-            Guard.Against<ArgumentNullException>(wordsCount == null, "WordsFrequencyFileRepository: wordsCount is null");
-            this.wordsCount = wordsCount;
-        }
+            Guard.Against<ArgumentNullException>(wordsCount.IsNullOrEmpty(), "Storage: wordsCount is null");
 
-        public void Commit()
-        {
             var txt = new StringBuilder();
             wordsCount.ForEach(wc => txt.AppendFormat("{0} = {1}{2}", wc.Key, wc.Value, Environment.NewLine));
 

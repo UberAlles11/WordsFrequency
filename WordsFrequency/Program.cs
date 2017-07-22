@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using System;
 using System.Data.Entity;
+using System.Linq;
 using WordsFrequency.Common.DAL;
 using WordsFrequency.Common.Extensions;
+using WordsFrequency.Common.Text;
 using WordsFrequency.UI;
 
 namespace WordsFrequency
@@ -40,7 +42,7 @@ namespace WordsFrequency
                             }
                             else
                             {
-                                text = textSource.ReadText(); // Получить текст из источника                                
+                                text = textSource.ReadTextToBuffer(); // Получить текст из источника                                
                                 if (text.IsNullOrEmpty())
                                 {
                                     ui.ShowError(">> Текст не содержит слов.");
@@ -67,15 +69,21 @@ namespace WordsFrequency
 
                         using (var scope = container.BeginLifetimeScope())
                         {
+                            var words = scope.Resolve<ITextProcessor>().GetWords(text);                            
                             storage = scope.ResolveNamed<IWordsFrequencyStorage>(typ.ToString()); // Получить нужный стораж из контейнера
 
-                            if (storage.IsNull())
+                            if (words.IsNullOrEmpty() || storage.IsNull())
                             {
                                 ui.ShowErrorWithEscape(">> Текст не содержит слов.");
                             }
                             else
                             {
-                                storage.Commit();
+                                var wordsCount = scope.Resolve<IWordsFrequencyProcessor>().GetWordsFrequency(words);
+                                if (typ == SourceType.Console)
+                                {
+                                    wordsCount = wordsCount.Where(wc => wc.Key.Length > 3 && wc.Value > 2).ToDictionary(wc => wc.Key, wc => wc.Value);
+                                }
+                                storage.Commit(wordsCount);
                                 ui.WriteLine(string.Format(">> Выполнено{0}", Environment.NewLine));
                             }
                         }

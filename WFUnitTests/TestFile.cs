@@ -5,7 +5,8 @@ namespace WFUnitTests
 {
     public class TestFile
     {
-        public string FilePath { get; set; }
+        public string FilePath { get; }
+        public string Text { get; private set; }
 
         public TestFile(string path, string text)
         {
@@ -16,9 +17,11 @@ namespace WFUnitTests
 
         public void Create(string text)
         {
+            Text = text;
+
             using (StreamWriter sw = File.CreateText(FilePath))
-            {
-                sw.WriteLine(text);
+            {                
+                sw.Write(Text);
             }
         }
 
