@@ -70,20 +70,26 @@ namespace WordsFrequency
                         using (var scope = container.BeginLifetimeScope())
                         {
                             var words = scope.Resolve<ITextProcessor>().GetWords(text);                            
-                            storage = scope.ResolveNamed<IWordsFrequencyStorage>(typ.ToString()); // Получить нужный стораж из контейнера
+                            
 
-                            if (words.IsNullOrEmpty() || storage.IsNull())
+                            if (words.IsNullOrEmpty())
                             {
                                 ui.ShowErrorWithEscape(">> Текст не содержит слов.");
                             }
                             else
                             {
+                                ui.WriteLine(string.Format(">> Найдено {0} слов.{1}", words.Count(), Environment.NewLine));
+
                                 var wordsCount = scope.Resolve<IWordsFrequencyProcessor>().GetWordsFrequency(words);
                                 if (typ == SourceType.Console)
                                 {
                                     wordsCount = wordsCount.Where(wc => wc.Key.Length > 3 && wc.Value > 2).ToDictionary(wc => wc.Key, wc => wc.Value);
                                 }
-                                storage.Commit(wordsCount);
+
+                                storage = scope.ResolveNamed<IWordsFrequencyStorage>(typ.ToString()); // Получить нужный стораж из контейнера
+
+                                if (!storage.IsNull())
+                                    storage.Commit(wordsCount);
                                 ui.WriteLine(string.Format(">> Выполнено{0}", Environment.NewLine));
                             }
                         }

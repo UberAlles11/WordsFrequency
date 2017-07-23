@@ -12,3 +12,4 @@
 /WFUnitTests/obj
 /TestResults
 /packages
+/WordsFrequencyCommon/DAL/UnitOfWorkADO.cs

@@ -71,6 +71,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ReadMe.txt" />
     <Content Include="Краусс.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
